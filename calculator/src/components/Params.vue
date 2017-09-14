@@ -19,6 +19,7 @@
       </b-col>
     </b-row>
 
+    </br>
     <b-form-checkbox id="radio1" @change="toggleDerivativeChecked" v-model="form.isDChecked">1st derivative</b-form-checkbox>
     <b-form-checkbox id="radio2" @change="toggleSecondDerivativeChecked" v-model="form.isDDChecked">2st derivative</b-form-checkbox>
   </div>
@@ -47,6 +48,7 @@
           return this.$store.state.domainLeft
         },
         set (value) {
+          value = value | 0
           this.$store.commit('setDomainLeft', value)
         }
       },
@@ -55,6 +57,8 @@
           return this.$store.state.domainRight
         },
         set (value) {
+          value = value | 0
+          console.log(value)
           this.$store.commit('setDomainRight', value)
         }
       }
@@ -89,11 +93,8 @@
 </script>
 <style scoped>
 .params {
-  margin-top: 20px;
-  margin-bottom: 20px;
 }
 
 .setup-thing {
-  margin-bottom: 30px;
 }
 </style>

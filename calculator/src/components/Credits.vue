@@ -2,24 +2,15 @@
   <div class="credits-block">
     <b-container>
       <h4>Credits</h4>
-      <b-row>
-        <b-col class="credits-list">
-          <p>Frontend Technology</p>
-          <ul>
-            <a href="https://vuejs.org">Vue.js</a>
+          <p> Created by Cannon Tuttle for AP Calculus BC 2017-2018.</p>
+          <p class="cred-header">Frontend Technology:</p>
+            <a href="https://vuejs.org">Vue.js</a></br>
             <a href="https://bootstrap-vue.org">Vue Bootstrap</a>
-          </ul>
-        </b-col>
-        <b-col class="credits-list">
-          <p>Research</p>
-          <ul>
-            <a href="https://vuejs.org">Vue.js</a>
+          <p class="cred-header">Research:</p>
+            <a href="https://vuejs.org">Vue.js</a></br>
             <a href="https://bootstrap-vue.org">Vue Bootstrap</a>
             </br>
             <p>Hi: {{hiVal}} </p>
-          </ul>
-        </b-col>
-      </b-row>
     </b-container>
   </div>
 </template>
@@ -47,10 +38,11 @@
 
 <!-- modal.vue -->
 <style scoped>
-.credits-block {
-  margin-top: 20px;
-}
 .credits-list {
   /* text-align: center; */
+}
+.cred-header {
+  margin-bottom: 5px;
+  margin-top: 10px;
 }
 </style>

@@ -10,21 +10,35 @@ export const store = new Vuex.Store({
     domainRight: 100,
     isDerivativeChecked: false,
     isSecondDerivativeChecked: false,
-    needsRefreshedGraph: false
+    needsRefreshedGraph: false,
+    isDomainLeftZoomed: true,
+    isDomainRightZoomed: true,
+    coolPoints: [
+      { name: 'absolute max', x: 10, y: 10 },
+      { name: 'absolute min', x: 0, y: -10 }
+    ]
   },
   mutations: {
     increment (state) {
       state.hi++
     },
     setDomainLeft (state, dl) {
+      if (dl === '') {
+        dl = 0
+      }
       if (Math.max(dl, -100)) {
         state.needsRefreshedGraph = true
+        state.isDomainLeftZoomed = false
         state.domainLeft = Math.max(dl, -100)
       }
     },
     setDomainRight (state, dr) {
+      if (dr === null) {
+        dr = 0
+      }
       if (Math.min(dr, 100)) {
         state.domainRight = Math.min(dr, 100)
+        state.isDomainRightZoomed = false
         state.needsRefreshedGraph = true
       }
     },
@@ -38,6 +52,12 @@ export const store = new Vuex.Store({
     },
     refreshedGraph (state) {
       state.needsRefreshedGraph = false
+    },
+    domainLeftIsZoomed (state) {
+      state.isDomainLeftZoomed = true
+    },
+    domainRightIsZoomed (state) {
+      state.isDomainRightZoomed = true
     }
   }
 })

@@ -5,15 +5,19 @@
     </div>
     <b-container class="bv-example-row">
       <b-row>
-        <b-col md="4">
+        <b-col class="upper-col" md="3">
           <params></params>
         </b-col>
-        <b-col md="8">
+        <b-col class="upper-col" md="6">
           <graph></graph>
         </b-col>
+        <b-col class="upper-col" md="3">
+          <point-table></point-table>
+        </b-col>
       </b-row>
+      </br>
       <b-row>
-        <b-col>
+        <b-col> 
           <credits></credits>
         </b-col>
       </b-row>
@@ -25,7 +29,7 @@
 import Graph from './Graph.vue'
 import Params from './Params.vue'
 import Credits from './Credits.vue'
-
+import PointTable from './PointTable.vue'
 export default {
   name: 'hello',
   data () {
@@ -36,7 +40,8 @@ export default {
   components: {
     Graph,
     Params,
-    Credits
+    Credits,
+    PointTable
   }
 }
 </script>
@@ -61,14 +66,18 @@ a {
   color: #42b983;
 }
 
+.upper-col {
+  margin-top: 20px;
+}
+
 .bv-example-row {
   /* background-color: #ff00ff; */
 }
 
 .top {
-  background-color: #000000;
-  color: #ffffff;
+  background-color: #39CCCC;
   padding: 10px;
+  color: #000000;
 }
 
 .title {
