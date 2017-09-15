@@ -1,6 +1,0 @@
-9/13/17
--added graphing with domain changes
--fake function graph
--responsive UI
--credits section
--params box
