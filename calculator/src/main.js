@@ -9,10 +9,14 @@ import VueD3 from 'vue-d3'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import 'vue-directive-tooltip/css/index.css'
+
+import Tooltip from 'vue-directive-tooltip'
 
 Vue.use(BootstrapVue)
 Vue.use(VueD3)
 Vue.use(Vuex)
+Vue.use(Tooltip)
 
 import { store } from './store'
 

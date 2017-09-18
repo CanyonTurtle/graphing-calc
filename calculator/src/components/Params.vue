@@ -48,7 +48,7 @@
           return this.$store.state.domainLeft
         },
         set (value) {
-          value = value | 0
+          console.log(value)
           this.$store.commit('setDomainLeft', value)
         }
       },
@@ -57,7 +57,6 @@
           return this.$store.state.domainRight
         },
         set (value) {
-          value = value | 0
           console.log(value)
           this.$store.commit('setDomainRight', value)
         }

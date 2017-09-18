@@ -2,6 +2,10 @@ import Vuex from 'vuex'
 import Vue from 'vue'
 
 Vue.use(Vuex)
+
+var isNum = function (n) {
+  return !isNaN(parseFloat(n)) && isFinite(n)
+}
 // eslint-disable-next-line
 export const store = new Vuex.Store({
   state: {
@@ -23,24 +27,30 @@ export const store = new Vuex.Store({
       state.hi++
     },
     setDomainLeft (state, dl) {
-      if (dl === '') {
+      if (dl === '' || dl == null) {
+        dl = 0
+      } else if (dl === '-') {
+        dl = 0
+      } else if (!isNum(dl)) {
         dl = 0
       }
-      if (Math.max(dl, -100)) {
-        state.needsRefreshedGraph = true
-        state.isDomainLeftZoomed = false
-        state.domainLeft = Math.max(dl, -100)
-      }
+      state.needsRefreshedGraph = true
+      state.isDomainLeftZoomed = false
+      state.domainLeft = Math.max(dl, -1000000)
+      console.log('domainLeft set to ' + state.domainLeft)
     },
     setDomainRight (state, dr) {
-      if (dr === null) {
+      if (dr === '' || dr == null) {
+        dr = 0
+      } else if (dr === '-') {
+        dr = 0
+      } else if (!isNum(dr)) {
         dr = 0
       }
-      if (Math.min(dr, 100)) {
-        state.domainRight = Math.min(dr, 100)
-        state.isDomainRightZoomed = false
-        state.needsRefreshedGraph = true
-      }
+
+      state.domainRight = Math.min(dr, 1000000)
+      state.isDomainRightZoomed = false
+      state.needsRefreshedGraph = true
     },
     toggleIsDerivativeChecked (state, val) {
       state.isDerivativeChecked = val

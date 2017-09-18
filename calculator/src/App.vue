@@ -3,17 +3,23 @@
     <head>
       <meta name="viewport" content="width=device-width">
     </head>
-    <hello></hello>
+    <hello v-bind:style="{ backgroundColor: bgCol }"></hello>
   </div>
 </template>
 
 <script>
 import Hello from './components/Hello'
+import Theme from './themes'
 
 export default {
   name: 'app',
   components: {
     Hello
+  },
+  data () {
+    return {
+      bgCol: Theme.backgroundColor
+    }
   }
 }
 </script>
@@ -29,6 +35,5 @@ export default {
 }
 
 #app {
-  background-color: #fff2e6;
 }
 </style>

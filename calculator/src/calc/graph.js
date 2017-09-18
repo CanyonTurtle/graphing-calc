@@ -1,13 +1,18 @@
+import Theme from '../themes'
+
 const graphFunc = function (fun, domainLeft, domainRight, ctx) {
-  domainLeft = domainLeft || 0
-  domainRight = domainRight || 0
+  // color theme.
+  let theme = Theme
+
+  // domainLeft = domainLeft || 0
+  // domainRight = domainRight || 0
   // hard-coded function
   fun = (x) => (50 * Math.sin(x * 0.1))
 
   ctx.$d3.select('svg').remove()
   // TODO write axis labels and scale
 
-  var graphGrain = (domainRight - domainLeft < 10) ? 0.2 : 1
+  var graphGrain = Math.abs(domainRight - domainLeft) * 0.01
 
   // evaluate mock functions.
   var globalMaxY = 0
@@ -26,18 +31,18 @@ const graphFunc = function (fun, domainLeft, domainRight, ctx) {
   }
 
   var sinePoints = []
-  for (let i = domainLeft - 1; i <= domainRight + 1; i += graphGrain) {
+  for (let i = domainLeft; i <= domainRight; i += graphGrain) {
     let y = 50 * Math.sin(0.1 * i)
     updateMaxY(y)
     updateMinY(y)
     sinePoints.push([i, y])
   }
   var sineDerivativePoints = []
-  for (let i = domainLeft - 1; i <= domainRight + 1; i += graphGrain) {
+  for (let i = domainLeft; i <= domainRight; i += graphGrain) {
     sineDerivativePoints.push([i, 50 * Math.cos(i / 10) * 0.1])
   }
   var sineDoubleDerivativePoints = []
-  for (let i = domainLeft - 1; i <= domainRight + 1; i += graphGrain) {
+  for (let i = domainLeft; i <= domainRight; i += graphGrain) {
     sineDoubleDerivativePoints.push([i, -50 * Math.sin(i / 10) * 0.1 * 0.1])
   }
 
@@ -48,8 +53,8 @@ const graphFunc = function (fun, domainLeft, domainRight, ctx) {
   var nX = 10
   var nY = 10
 
-  var visibleDomainLeft = domainLeft
-  var visibleDomainRight = domainRight
+  var visibleDomainLeft = domainLeft - 0.1 * Math.abs(domainRight - domainLeft)
+  var visibleDomainRight = domainRight + 0.1 * Math.abs(domainRight - domainLeft)
 
 //   var visibleDomainLeft = 0
 //   var visibleDomainRight = 0
@@ -69,11 +74,31 @@ const graphFunc = function (fun, domainLeft, domainRight, ctx) {
   var numToGridTickX = maxEdge / domainSize
 
   var xToScale = function (oldX) {
-    var newX = (oldX - domainLeft) * numToGridTickX
+    var newX = (oldX - visibleDomainLeft) * numToGridTickX
     return newX
   }
 
-  var rangeSize = globalMaxY - globalMinY
+  // range view gets smaller with large domain
+
+  let domainAbsSize = Math.abs(domainSize)
+  var biggerGlobalY = globalMaxY * domainAbsSize * 0.01
+  var smallerGlobalY = globalMinY * domainAbsSize * 0.01
+
+  if (biggerGlobalY > globalMaxY) {
+    globalMaxY = biggerGlobalY
+  } else {
+    globalMaxY += domainAbsSize * 0.5
+  }
+  if (smallerGlobalY < globalMinY) {
+    globalMinY = smallerGlobalY
+  } else {
+    globalMinY -= domainAbsSize * 0.5
+  }
+
+  // globalMaxY = globalMaxY * domainSize * 0.1
+  // globalMinY = globalMinY * domainSize * 0.1
+
+  var rangeSize = (globalMaxY - globalMinY)
   var numToGridTickY = maxEdge / rangeSize
 
   var yToScale = function (oldY) {
@@ -84,11 +109,11 @@ const graphFunc = function (fun, domainLeft, domainRight, ctx) {
 
   // var scaledYAxisX = maxEdge / 2 + numToGridTick * (leftDomain - rightDomain)
 
-  console.log('rangeSize = ' + rangeSize + ', globalMaxY = ' + globalMaxY + 'globalMinY = ' + globalMinY)
+  // console.log('rangeSize = ' + rangeSize + ', globalMaxY = ' + globalMaxY + 'globalMinY = ' + globalMinY)
 
-  var gridColor = '#ffffff'
-  var graphColor = '#eeeeee'
-  var axisColor = '#000000'
+  var gridColor = theme.gridColor
+  var graphColor = theme.graphColor
+  var axisColor = theme.axisColor
 
   let graphSvg = graphHtml.append('svg')
     .attr('width', maxEdge)
@@ -123,8 +148,8 @@ const graphFunc = function (fun, domainLeft, domainRight, ctx) {
         .text(((`${xCoord}`).substring(0, 4)) || '0')
         .attr('font-size', '10px')
     }
-    putTick(visibleDomainLeft + i * domainSize / nX)
-    putTick(visibleDomainLeft + -1 * i * domainSize / nX)
+    putTick(i * domainSize / nX)
+    putTick(-1 * i * domainSize / nX)
   }
 
   // tickmarks on Y axis
@@ -185,10 +210,38 @@ const graphFunc = function (fun, domainLeft, domainRight, ctx) {
       }
       return points
     }
+
+    let unscaledPoints = JSON.parse(JSON.stringify(functionData.points))
+    let scaledPoints = scalePoints(functionData.points)
+
     graphSvg.append('path')
       .style('fill', 'none')
       .style('stroke', functionData.color)
-      .attr('d', graphPoints(scalePoints(functionData.points)))
+      .attr('d', graphPoints(scaledPoints))
+    function placeSpecialPoints (specialPoints, unscaledPoints) {
+      ctx.specialPointsHover = []
+      for (let i = 0; i < specialPoints.length; i++) {
+        graphSvg.append('circle')
+          .attr('stroke', 'black')
+          .style('fill', 'black')
+          .attr('cx', specialPoints[i][0])
+          .attr('cy', specialPoints[i][1])
+          .attr('r', 3)
+          // .attr('v-tooltip', `(${specialPoints[i][0] + ', ' + specialPoints[i][1]})`)
+          // .attr('v-tooltip', 'hi')
+        ctx.specialPointsHover.push([specialPoints[i][0], specialPoints[i][1], unscaledPoints[i][0], unscaledPoints[i][1]])
+      }
+    }
+    placeSpecialPoints(
+      [
+        scaledPoints[0],
+        scaledPoints[scaledPoints.length - 1]
+      ],
+      [
+        unscaledPoints[0],
+        unscaledPoints[functionData.points.length - 1]
+      ],
+  )
   }
   // graphFunction({
   //   color: '#ff0000',
@@ -199,19 +252,19 @@ const graphFunc = function (fun, domainLeft, domainRight, ctx) {
   //   ]
   // })
   graphFunction({
-    color: '#0000ff',
+    color: theme.functionOne,
     points: sinePoints
   })
   if (ctx.$store.state.isDerivativeChecked === true) {
     graphFunction({
-      color: '#00ff00',
+      color: theme.functionTwo,
       points: sineDerivativePoints
     })
   }
 
   if (ctx.$store.state.isSecondDerivativeChecked === true) {
     graphFunction({
-      color: '#ff0000',
+      color: theme.functionThree,
       points: sineDoubleDerivativePoints
     })
   }

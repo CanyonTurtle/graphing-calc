@@ -5,10 +5,9 @@
           <p> Created by Cannon Tuttle for AP Calculus BC 2017-2018.</p>
           <p class="cred-header">Frontend Technology:</p>
             <a href="https://vuejs.org">Vue.js</a></br>
-            <a href="https://bootstrap-vue.org">Vue Bootstrap</a>
+            <a href="https://bootstrap-vue.org">Vue Bootstrap</a></br>
+            <a href="https://vue-d3.org">Vue d3</a>
           <p class="cred-header">Research:</p>
-            <a href="https://vuejs.org">Vue.js</a></br>
-            <a href="https://bootstrap-vue.org">Vue Bootstrap</a>
             </br>
             <p>Hi: {{hiVal}} </p>
     </b-container>

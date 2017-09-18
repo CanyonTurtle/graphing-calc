@@ -5,13 +5,13 @@
     </div>
     <b-container class="bv-example-row">
       <b-row>
-        <b-col class="upper-col" md="3">
-          <params></params>
-        </b-col>
         <b-col class="upper-col" md="6">
           <graph></graph>
         </b-col>
-        <b-col class="upper-col" md="3">
+        <b-col class="upper-col" md="4">
+          <params></params>
+        </b-col>
+        <b-col class="upper-col" md="2">
           <point-table></point-table>
         </b-col>
       </b-row>
