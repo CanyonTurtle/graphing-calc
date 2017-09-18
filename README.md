@@ -8,8 +8,16 @@ A browser graphing tool, built for AP Calculus BC.
 
 ### Project Structure
 ```
-./documentation - Presentation of the project, description of process.
-   -VERSION.txt - commit history, notable versions.
-   -
+docs/ - Presentation of the project, description of process.
+  version-history.txt - commit history, notable versions.
+calculator/src
+  calc/ - logic of graphing calculator
+    graph.js - generating a graph.
+  components/ - parts of UI.
+    ...
+  App.vue - top-level of browser application
+  main.js - entry point of app
+  store.js - the important data shared by UI and graphing calculator
+  themes.js - appearance configuration.
 
 ```
