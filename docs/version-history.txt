@@ -4,6 +4,5 @@ v1.0            9/13/17
     -responsive UI
     -credits section
     -params box
-
-v1.1
-    -added any-size domain support w scaling functin.
+v1.2            9/17/17
+    -added scaling / hover buttons.
