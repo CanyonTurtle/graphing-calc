@@ -18,8 +18,7 @@ export const store = new Vuex.Store({
     isDomainLeftZoomed: true,
     isDomainRightZoomed: true,
     coolPoints: [
-      { name: 'absolute max', x: 10, y: 10 },
-      { name: 'absolute min', x: 0, y: -10 }
+      // { name: 'absolute max', x: 10, y: 10, scaledx: 0, scaledY: 0 }
     ]
   },
   mutations: {
@@ -68,6 +67,15 @@ export const store = new Vuex.Store({
     },
     domainRightIsZoomed (state) {
       state.isDomainRightZoomed = true
+    },
+    setCoolPoints (state, coolP) {
+      state.coolPoints = coolP
+    },
+    addCoolPoint (state, coolPt) {
+      state.coolPoints.push(coolPt)
+    },
+    resetCoolPoints (state) {
+      state.coolPoints = []
     }
   }
 })

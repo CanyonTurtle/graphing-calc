@@ -1,8 +1,8 @@
 <template>
   <div class="graph"> 
     <div class="graph-area" ref="graphArea" v-bind:style="{ height: graphDynamicHeight + 'px' }">
-      <div v-for="point in specialPointsHover"v-bind:key="'hi' + point">
-        <div v-tooltip="`(${('' + point[2]).substring(0,4)}, ${('' + point[3]).substring(0,4)})`" v-bind:style="{outline: 'none', position: 'absolute', left: point[0] - 5 + 'px', top: point[1] - 5 + 'px', borderRadius: 10 + 'px', width: 10 + 'px', height: 10 + 'px'}" ></div>
+      <div v-for="point in points" v-bind:key="'' + point">
+        <div v-text="`${point.name} (${('' + point.x).substring(0,4)}, ${('' + point.y).substring(0,4)})`" v-bind:style="{outline: 'none', position: 'absolute', left: point.scaledX - 5 + 'px', top: point.scaledY - 5 + 'px', borderRadius: 10 + 'px', width: 10 + 'px', height: 10 + 'px' }" ></div>
       </div>
     </div>
     <p v-show="false">updated: {{dummyData}}</p>
@@ -22,12 +22,21 @@ export default {
       pidLeft: null,
       pidRight: null,
       graphDynamicHeight: 300,
-      specialPointsHover: [
-        [0, 0]
+      points: [
+      //   {
+      //     x: 0,
+      //     y: 0,
+      //     scaledX: 10,
+      //     scaledY: 10,
+      //     name: 'endpoint'
+      //   }
       ]
     }
   },
   computed: {
+    isDomainValid () {
+      return (this.delayDomainLeft < this.delayDomainRight)
+    },
     dummyData () {
       if (this.$store.state.needsRefreshedGraph) {
         this.setupGraph()
@@ -43,8 +52,13 @@ export default {
 
       if (!this.$store.state.isDomainLeftZoomed) {
         if (!this.pidLeft) {
+          var leftI = 0
+          var leftICap = 0.03
           this.pidLeft = setInterval(function () {
-            ctx.delayDomainLeft += 0.2 * (ctx.$store.state.domainLeft - ctx.delayDomainLeft)
+            leftI += 0.005 * (ctx.$store.state.domainLeft - ctx.delayDomainLeft)
+            leftI = Math.max(leftI, leftICap)
+            leftI = Math.min(leftI, leftICap * -1)
+            ctx.delayDomainLeft += 0.2 * (ctx.$store.state.domainLeft - ctx.delayDomainLeft) + leftI
             console.log('moving')
             if (Math.abs(ctx.$store.state.domainLeft - ctx.delayDomainLeft) < 0.4) {
               ctx.delayDomainLeft = ctx.$store.state.domainLeft
@@ -68,8 +82,13 @@ export default {
 
       if (!this.$store.state.isDomainRightZoomed) {
         if (!this.pidRight) {
+          var rightI = 0
+          var rightICap = 0.03
           this.pidRight = setInterval(function () {
-            ctx.delayDomainRight += 0.2 * (ctx.$store.state.domainRight - ctx.delayDomainRight)
+            rightI += 0.005 * (ctx.$store.state.domainRight - ctx.delayDomainRight)
+            rightI = Math.max(rightI, rightICap)
+            rightI = Math.min(rightI, rightICap * -1)
+            ctx.delayDomainRight += 0.3 * (ctx.$store.state.domainRight - ctx.delayDomainRight) + rightI
             console.log('moving')
             if (Math.abs(ctx.$store.state.domainRight - ctx.delayDomainRight) < 0.4) {
               ctx.delayDomainRight = ctx.$store.state.domainRight
@@ -90,9 +109,14 @@ export default {
   },
   methods: {
     setupGraph () {
-      this.graphDynamicHeight = this.$refs.graphArea.getBoundingClientRect().width
+      if (this.$refs.graphArea) {
+        this.graphDynamicHeight = this.$refs.graphArea.getBoundingClientRect().width
+      }
       console.log
-      graphFunc(null, this.delayDomainLeft, this.delayDomainRight, this)
+      if (this.isDomainValid) {
+        this.points = this.$store.state.coolPoints
+        graphFunc(null, this.delayDomainLeft, this.delayDomainRight, this)
+      }
     }
   },
   mounted: function () {

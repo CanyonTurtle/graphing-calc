@@ -6,3 +6,6 @@ v1.0            9/13/17
     -params box
 v1.2            9/17/17
     -added scaling / hover buttons.
+v1.3            9/18/17
+    -fixed point showing in tables and on graphs.
+    -added snap-to-domain movement

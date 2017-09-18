@@ -37,6 +37,9 @@ const graphFunc = function (fun, domainLeft, domainRight, ctx) {
     updateMinY(y)
     sinePoints.push([i, y])
   }
+  let y = 50 * Math.sin(0.1 * domainRight)
+
+  sinePoints.push([domainRight, y])
   var sineDerivativePoints = []
   for (let i = domainLeft; i <= domainRight; i += graphGrain) {
     sineDerivativePoints.push([i, 50 * Math.cos(i / 10) * 0.1])
@@ -211,14 +214,16 @@ const graphFunc = function (fun, domainLeft, domainRight, ctx) {
       return points
     }
 
+    let scaledPoints = scalePoints(JSON.parse(JSON.stringify(functionData.points)))
     let unscaledPoints = JSON.parse(JSON.stringify(functionData.points))
-    let scaledPoints = scalePoints(functionData.points)
 
     graphSvg.append('path')
       .style('fill', 'none')
       .style('stroke', functionData.color)
       .attr('d', graphPoints(scaledPoints))
+
     function placeSpecialPoints (specialPoints, unscaledPoints) {
+      ctx.$store.commit('resetCoolPoints')
       ctx.specialPointsHover = []
       for (let i = 0; i < specialPoints.length; i++) {
         graphSvg.append('circle')
@@ -229,7 +234,26 @@ const graphFunc = function (fun, domainLeft, domainRight, ctx) {
           .attr('r', 3)
           // .attr('v-tooltip', `(${specialPoints[i][0] + ', ' + specialPoints[i][1]})`)
           // .attr('v-tooltip', 'hi')
-        ctx.specialPointsHover.push([specialPoints[i][0], specialPoints[i][1], unscaledPoints[i][0], unscaledPoints[i][1]])
+        ctx.$store.commit('addCoolPoint', {
+          x: unscaledPoints[i][0],
+          y: unscaledPoints[i][1],
+          scaledX: specialPoints[i][0],
+          scaledY: specialPoints[i][1],
+          name: 'a point.'
+        })
+
+        // TODO remove implicit state mutation
+        // ctx.$store.commit('setCoolPoints', (function () {
+        //   let betterCoolPoints = []
+        //   for (i in unscaledPoints) {
+        //     betterCoolPoints.push({
+        //       name: 'place',
+        //       x: ('' + unscaledPoints[i].x).substring(0, 4),
+        //       y: ('' + unscaledPoints[i].y).substring(0, 4)
+        //     })
+        //   }
+        //   return betterCoolPoints
+        // })())
       }
     }
     placeSpecialPoints(

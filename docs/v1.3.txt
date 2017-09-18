@@ -1,0 +1,3 @@
+9/18/17
+-fixed point showing in tables and on graphs.
+-added snap-to-domain movement
